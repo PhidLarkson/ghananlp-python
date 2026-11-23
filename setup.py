@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="ghana-nlp",  # Package name on PyPI
-    version="0.1.5",
+    version="0.2.0",
     author="Prince Larbi",
     author_email="phiddyconcept@gmail.com",
     description="A Python library for interacting with the GhanaNLP APIs",
@@ -20,7 +20,7 @@ setup(
         "Operating System :: OS Independent",
     ],
 
-    python_requires='>=3.6',
+    python_requires=">=3.9",
     install_requires=[
         "requests"
     ],

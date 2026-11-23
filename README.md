@@ -1,86 +1,105 @@
-# Ghana NLP Python Library 
+# Ghana NLP Python Library
 
-The **[Ghana NLP API](https://translation.ghananlp.org/) Python Library** provides an easy way to integrate local African language technologies into your Python projects. Whether you're looking for **translation**, **speech-to-text (STT)**, or **text-to-speech (TTS)**, this library makes it simple and intuitive to get started.
+A Python client for the Khaya AI API: **translation**, **speech-to-text** and **text-to-speech** for Ghanaian and other African languages.
 
-## Features
-
-- **Translation**: Translate text between supported African languages (e.g., English to Twi).
-- **Speech-to-Text (STT)**: Convert audio files into text.
-- **Text-to-Speech (TTS)**: Generate natural-sounding speech from text in local languages.
+Version 0.2 calls the Khaya platform at `https://api.khaya.ai`. If you're on 0.1.x, see [Upgrading from 0.1](#upgrading-from-01).
 
 ## Installation
 
-You can install the library directly from PyPI:
-
 ```bash
-pip install ghana-nlp
-```
-And update to the lastest version
-
-```bash
-python -m pip install --upgrade ghana-nlp
+pip install -U ghana-nlp
 ```
 
-## Usage
+Requires Python 3.9 or later.
 
-### Initialize the Library
+## Setup
 
-First, import the library and set your API key:
+Get an API key from the Khaya developer portal, then either pass it in or set `KHAYA_API_KEY`:
+
+```bash
+export KHAYA_API_KEY="your-api-key"
+```
 
 ```python
 from ghana_nlp import GhanaNLP
 
-nlp = GhanaNLP(api_key="your_api_key_here")
+nlp = GhanaNLP()                      # reads KHAYA_API_KEY
+nlp = GhanaNLP(api_key="your-key")    # or pass it in
 ```
 
-### Translation 
+## Translation
 
-Translate from English to Twi:
+Pass a language pair such as `eng-twi` (English to Twi) or `twi-eng`:
 
 ```python
-result = nlp.translate("Hello, how are you?", language_pair="en-tw")
-print(result)  # Wo ho te sɛn?
+text = nlp.translate("Good morning", "eng-twi")
+print(text)  # Mema wo akwaaba
 ```
 
-### Speech-to-Text (STT)
+## Speech to text
 
-Convert an audio file (WAV format) to text:
+Transcribe a WAV or other audio file:
 
 ```python
-result = nlp.speech_to_text("your_audio_file.wav", language="tw")
-print(result) 
+text = nlp.stt("interview.wav", language="twi")
+print(text)
 ```
 
-### Text-to-Speech (TTS)
+`speech_to_text` is the same method under a longer name.
 
-Convert text to speech:
+## Text to speech
+
+`tts` returns WAV audio as bytes. Pick a language and, optionally, a voice:
 
 ```python
-result = nlp.text_to_speech("Good morning", lang="tw")
-print(result)  # audio binary, write a code to either serve to an audio file or play directly
+audio = nlp.tts("Maakye, akwaaba", lang="twi", speaker="female")
+with open("output.wav", "wb") as f:
+    f.write(audio)
 ```
 
-Check this repo to guide you with dealing with audio binary data: [EXAMPLE CODE](https://github.com/PhidLarkson/ghananlp-tts-python)
+Voices are `male_low`, `male_high` and `female`. `text_to_speech` is the same method under a longer name.
 
+## Errors
 
-## Supported Languages
+Every failure raises `GhanaNLPError`, with these attributes:
 
-The library supports multiple African languages, including:
-- **English (en)**
-- **Twi (tw)**
-- **Ga (gaa)**
-- **Ewe (ee)**
-- **Fante (fat)**
-- **Dagbani (dag)**, and more!
+| Attribute | Meaning |
+| --- | --- |
+| `message` | What went wrong |
+| `status_code` | HTTP status, or `None` if the request never got a response |
+| `code` | Platform code, such as `INVALID_API_KEY` |
+| `activity_id` | Request ID to quote when contacting support |
 
-## Error Handling
+```python
+from ghana_nlp import GhanaNLP, GhanaNLPError
 
-The library provides clear error messages if something goes wrong, such as incorrect language codes or invalid API requests. Check the `message` field in the response for details.
+try:
+    GhanaNLP().translate("Hello", "eng-twi")
+except GhanaNLPError as err:
+    print(err.status_code, err.code, err.message)
+    print("Request ID:", err.activity_id)
+```
+
+## Upgrading from 0.1
+
+| 0.1 | 0.2 |
+| --- | --- |
+| Calls `translation-api.ghananlp.org` | Calls `api.khaya.ai` |
+| Sends `Ocp-Apim-Subscription-Key` | Sends `Authorization: Bearer <key>` |
+| Returns error dictionaries | Raises `GhanaNLPError` |
+| `translate(..., language_pair="en-tw")` | Default is `eng-twi` |
+| `tts(text, lang="tw")` | Use `twi`. `tw` is not a language code on the new API |
+| `tts` had no voice option | `tts(..., speaker=...)` |
+
+Keys from the legacy GhanaNLP portal don't work with the new API. Create a key in the Khaya developer portal.
+
+## Development
+
+```bash
+python -m unittest tests.test_api                     # offline unit tests
+KHAYA_API_KEY=... python -m unittest tests.test_api   # also runs the live test
+```
 
 ## License
 
-This library is licensed under the MIT License.
-
----
-
-For more details, check out the [documentation](https://pkwolffe.hashnode.dev/ghana-nlp-python-library) and start building cool stuff with **Ghana NLP**! 🎉
+MIT. See [LICENSE](LICENSE).
