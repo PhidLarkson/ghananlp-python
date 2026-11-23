@@ -100,6 +100,10 @@ python -m unittest tests.test_api                     # offline unit tests
 KHAYA_API_KEY=... python -m unittest tests.test_api   # also runs the live test
 ```
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
