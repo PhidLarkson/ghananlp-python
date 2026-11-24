@@ -11,7 +11,7 @@ setup(
     description="A Python library for interacting with the GhanaNLP APIs",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://pnlarbi.vercel.app/", 
+    url="https://github.com/PhidLarkson/ghananlp-python",
 
     packages=find_packages(),
     classifiers=[
@@ -25,7 +25,9 @@ setup(
         "requests"
     ],
      project_urls={  # Additional useful links
-        "Source": "https://github.com/PhidLarkson/Ghana-NLP-Python-Library",  
-        "Documentation": "https://pkwolffe.hashnode.dev/ghana-nlp-python-library",  # Blog post/documentation
+        "Source": "https://github.com/PhidLarkson/ghananlp-python",
+        "Documentation": "https://github.com/PhidLarkson/ghananlp-python#readme",
+        "Changelog": "https://github.com/PhidLarkson/ghananlp-python/blob/main/CHANGELOG.md",
+        "Issues": "https://github.com/PhidLarkson/ghananlp-python/issues",
     },
 )
